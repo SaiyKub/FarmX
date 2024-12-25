@@ -420,7 +420,7 @@ local function CheckLevel()
             NameMonster = "Toga Warrior"
             CFrameQuest = CFrame.new(-1580.04663, 6.35000277, -2986.47534, -0.515037298, 0, -0.857167721, 0, 1, 0, 0.857167721, 0, -0.515037298)
             CFrameMonster = CFrame.new(-1820.21484375, 51.68385696411133, -2740.6650390625)
-        elseif Lv == 300 or Lv <= 324 then
+            elseif Lv == 300 or Lv <= 324 then
             Monster = "Military Soldier"
             LvQuest = 1
             NameQuest = "MagmaQuest"
@@ -2024,7 +2024,7 @@ spawn(function()
             pcall(function()
                 CheckLevel()
                 for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if _G.AutoFarmLevel and BringFarmLevel and v.Name == Monster and (Mon == "Factory Staff" or Mon == "Monkey" or Mon == "Dragon Crew Warrior" or Mon == "Dragon Crew Archer") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 275 then
+                    if _G.AutoFarmLevel and BringFarmLevel and v.Name == Monster and (Mon == "Factory Staff" or Mon == "Monkey" or Mon == "Dragon Crew Warrior" or Mon == "Dragon Crew Archer") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 337.5 then
                         v.HumanoidRootPart.Size = Vector3.new(50,50,50)
                         v.HumanoidRootPart.CFrame = PosMon
                         v.Humanoid:ChangeState(14)
@@ -2312,7 +2312,7 @@ function InMyNetWork(object)
 	end
 end
 local function LockFPS()
-  setfpscap(60) -- ล็อค 60 fps
+  setfpscap(90) -- ล็อค 60 fps
 end
 LockFPS()
 _G.AutoSetSpawn = true
@@ -5239,7 +5239,7 @@ Module.FastAttack = (function()
         end
 
         if not self.FirstAttack then
-            task.wait(0.05)
+            task.wait(0.01)
         end
     end
 
@@ -5273,4 +5273,25 @@ local Toggle = Tabs.Seg:AddToggle("Auto Farm Level 1-2550 Max", {
         Settings.AutoClick = running -- Toggles the AutoClick setting
     end
 })
+
+local Toggle = Tabs.Seg:AddToggle("bingmob", {
+    Title = "รวบมอน", 
+    Description = "รวบมอนโหดๆ",
+    Default = true,
+    Callback = function(Value)
+        _G.Toggle_Bring = Value
+    end
+})
+
+RunService.RenderStepped:Connect(function()
+    if _G.Toggle_Bring == true then
+        for i,v in pairs(game.workspace.Enemies:GetChildren()) do
+            if (v.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 337.5 then
+                v.HumanoidRootPart.CFrame = CFrame.new(LocalPlayer.Character.HumanoidRootPart.CFrame.X - 10,LocalPlayer.Character.HumanoidRootPart.CFrame.Y,LocalPlayer.Character.HumanoidRootPart.CFrame.Z)
+                v.Humanoid.WalkSpeed = 0
+                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+            end
+        end
+    end
+end)
 
