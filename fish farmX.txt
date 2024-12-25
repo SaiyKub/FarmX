@@ -149,7 +149,7 @@ end
     local TweenService = game:GetService("TweenService")
 local Tw = TweenService:Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out,0,false,0), 
 
-{CFrame = CFrame.new(3089, 136.6955108642578, 325)}):Play()
+{CFrame = CFrame.new(-2678.330078125, 164.75059509277344, 1756.827880859375)}):Play()
 end)
 -- Auto Equip Rod
 spawn(function()
