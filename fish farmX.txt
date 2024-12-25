@@ -1,0 +1,221 @@
+local Players = game:GetService("Players")
+local GuiService = game:GetService("GuiService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local Char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+-- _G. = NIGA
+_G.AutoFish = false
+-- Equip Item
+local function equipItem(itemName)
+    local item = LocalPlayer.Backpack:FindFirstChild(itemName)
+    if item then
+        Char.Humanoid:EquipTool(item)
+    end
+end
+-- AutoCast
+local function autoCast()
+    while _G.AutoFish do
+        task.wait(0.1)
+        local rod = Char:FindFirstChildOfClass("Tool")
+        if rod and rod:FindFirstChild("events") and rod.events:FindFirstChild("cast") then
+            rod.events.cast:FireServer(100, 1)
+        end
+    end
+end
+-- AutoShake
+local function autoShake()
+    while _G.AutoFish do
+        task.wait(0.01)
+        pcall(function()
+            local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+            local shakeUI = playerGui:FindFirstChild("shakeui")
+            if shakeUI and shakeUI.Enabled then
+                local safezone = shakeUI:FindFirstChild("safezone")
+                if safezone then
+                    local button = safezone:FindFirstChild("button")
+                    if button and button:IsA("ImageButton") and button.Visible then
+                        GuiService.SelectedCoreObject = button
+                        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                    end
+                end
+            end
+        end)
+    end
+end
+-- AutoReel
+local function autoReel()
+    while _G.AutoFish do
+        task.wait(0.15)
+        for _, gui in pairs(LocalPlayer.PlayerGui:GetChildren()) do
+            if gui:IsA("ScreenGui") and gui.Name == "reel" then
+                if gui:FindFirstChild("bar") then
+                    ReplicatedStorage.events.reelfinished:FireServer(100, true)
+                end
+            end
+        end
+    end
+end
+-- Autofish
+local function toggleAutoFish(state)
+    _G.AutoFish = state
+    if state then
+        spawn(autoCast)
+        spawn(autoShake)
+        spawn(autoReel)
+    end
+end
+
+if game.CoreGui:FindFirstChild("ImageButton") then
+    game.CoreGui:FindFirstChild("ImageButton"):Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+local ImageButton = Instance.new("ImageButton")
+local UICorner = Instance.new("UICorner")
+local ClickSound = Instance.new("Sound")
+
+ScreenGui.Name = "ImageButton"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+ImageButton.Parent = ScreenGui
+ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0.120833337, 0, 0.0952890813, 0)
+ImageButton.Size = UDim2.new(0, 55, 0, 50)
+ImageButton.Draggable = true
+ImageButton.Image = "rbxassetid://105078491490062"
+
+UICorner.Parent = ImageButton	
+
+ClickSound.Parent = ImageButton
+ClickSound.SoundId = "rbxassetid://130785805"
+ClickSound.Volume = 1
+
+local function playClickAnimation()
+    local originalSize = ImageButton.Size
+    local TweenSizeUp = TweenService:Create(ImageButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 55, 0, 55)})
+    local TweenSizeDown = TweenService:Create(ImageButton, TweenInfo.new(0.1), {Size = originalSize})
+
+    TweenSizeUp:Play()
+    TweenSizeUp.Completed:Connect(function()
+        TweenSizeDown:Play()
+    end)
+end
+
+ImageButton.MouseButton1Down:Connect(function()
+    ClickSound:Play()    
+    playClickAnimation()    
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, "LeftControl", false, game)
+    game:GetService("VirtualInputManager"):SendKeyEvent(false, "LeftControl", false, game)
+end)
+
+-- GUI Skibidi
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local Window = Fluent:CreateWindow({
+    Title = "Fish",
+    SubTitle = "by FarmX",
+    TabWidth = 100,
+    Size = UDim2.fromOffset(480, 380),
+    Acrylic = false,
+    Theme = "Light",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+-- Tabs
+local Tabs = {
+    Main = Window:AddTab({ Title = "หน้าหลัก" })
+}
+
+local Main = Tabs.Main:AddSection("ฟาร์มปลา")
+
+Tabs.Main:AddToggle("ออโต้ฟาร์มปลา", { Title = "AutoFish", Default = false }):OnChanged(function(value)
+    toggleAutoFish(value)
+    Char.HumanoidRootPart.Anchored = value
+    local Players = game:GetService("Players")
+
+-- เรียกฟังก์ชันหยุดตัวละคร
+wait(5) -- รอ 5 วินาที
+local player = Players.LocalPlayer
+if _G.FreezeCharacter then
+    _G.FreezeCharacter(player)
+end
+
+wait(5) -- รอ 5 วินาที
+if _G.UnfreezeCharacter then
+    _G.UnfreezeCharacter(player)
+end
+    local TweenService = game:GetService("TweenService")
+local Tw = TweenService:Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out,0,false,0), 
+{CFrame = CFrame.new(198.05580139160156, 138.51815795898438, 11.4962739944458)}):Play()
+end)
+-- Auto Equip Rod
+spawn(function()
+    while task.wait(1) do
+        if _G.AutoFish then
+            for _, tool in pairs(LocalPlayer.Backpack:GetChildren()) do
+                if tool:IsA("Tool") and tool.Name:lower():find("rod") then
+                    equipItem(tool.Name)
+                end
+            end
+        end
+    end
+end)
+
+local Players = game:GetService("Players")
+
+-- ฟังก์ชันหยุดตัวละคร
+local function FreezeCharacter(player)
+    local character = player.Character
+    if character then
+        -- ปิดการเคลื่อนไหวของ Humanoid
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = 0
+            humanoid.JumpPower = 0
+        end
+
+        -- ล็อก Anchored ให้ทุก Part หยุดนิ่ง
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("BasePart") and not part.Anchored then
+                part.Anchored = true
+            end
+        end
+    end
+end
+
+-- ฟังก์ชันปลดล็อกตัวละคร
+local function UnfreezeCharacter(player)
+    local character = player.Character
+    if character then
+        -- คืนค่าความเร็วการเดินและกระโดด
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = 16 -- ค่าเริ่มต้น
+            humanoid.JumpPower = 50 -- ค่าเริ่มต้น
+        end
+
+        -- ปลดล็อก Anchored ให้ทุก Part เคลื่อนไหวได้
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("BasePart") and part.Anchored then
+                part.Anchored = false
+            end
+        end
+    end
+end
+
+-- ใส่ฟังก์ชันลงใน _G
+_G.FreezeCharacter = FreezeCharacter
+_G.UnfreezeCharacter = UnfreezeCharacter
+
+-- ตัวอย่างการใช้งาน
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        wait(2) -- รอให้ตัวละครโหลด
+        _G.FreezeCharacter(player) -- หยุดตัวละคร
+        wait(5) -- รอ 5 วินาที
+        _G.UnfreezeCharacter(player) -- ปลดล็อกตัวละคร
+    end)
+end)
+
