@@ -86,7 +86,7 @@ ImageButton.BorderSizePixel = 0
 ImageButton.Position = UDim2.new(0.120833337, 0, 0.0952890813, 0)
 ImageButton.Size = UDim2.new(0, 55, 0, 50)
 ImageButton.Draggable = true
-ImageButton.Image = "rbxassetid://105078491490062"
+ImageButton.Image = "rbxassetid://75896971820927"
 
 UICorner.Parent = ImageButton	
 
@@ -130,7 +130,7 @@ local Tabs = {
 
 local Main = Tabs.Main:AddSection("ฟาร์มปลา")
 
-Tabs.Main:AddToggle("ออโต้ฟาร์มปลา", { Title = "AutoFish", Default = false }):OnChanged(function(value)
+Tabs.Main:AddToggle("ออโต้ฟาร์มปลา", { Title = "ออโต้ไก่ตัน", Default = false }):OnChanged(function(value)
     toggleAutoFish(value)
     Char.HumanoidRootPart.Anchored = value
     local Players = game:GetService("Players")
@@ -147,8 +147,9 @@ if _G.UnfreezeCharacter then
     _G.UnfreezeCharacter(player)
 end
     local TweenService = game:GetService("TweenService")
-local Tw = TweenService:Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out,0,false,0), 
-{CFrame = CFrame.new(198.05580139160156, 138.51815795898438, 11.4962739944458)}):Play()
+local Tw = TweenService:Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out,0,false,0), 
+
+{CFrame = CFrame.new(3089, 136.6955108642578, 325)}):Play()
 end)
 -- Auto Equip Rod
 spawn(function()
