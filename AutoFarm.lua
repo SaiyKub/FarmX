@@ -2353,7 +2353,7 @@ ImageButton.BorderSizePixel = 0
 ImageButton.Position = UDim2.new(0.120833337, 0, 0.0952890813, 0)
 ImageButton.Size = UDim2.new(0, 55, 0, 50)
 ImageButton.Draggable = true
-ImageButton.Image = "rbxassetid://87570889103864"
+ImageButton.Image = "rbxassetid://75896971820927"
 
 UICorner.Parent = ImageButton	
 
