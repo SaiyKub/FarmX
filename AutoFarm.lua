@@ -2381,7 +2381,7 @@ end)
 
 local Window = Fluent:CreateWindow({
     Title = "BloxFruit " .. Fluent.Version,
-    SubTitle = "by FarmX :  test",
+    SubTitle = "by FarmX",
     TabWidth = 100,
     Size = UDim2.fromOffset(480, 380),
     Acrylic = false,
