@@ -128,6 +128,11 @@ local Tabs = {
     Main = Window:AddTab({ Title = "หน้าหลัก" })
 }
 
+local Options = Fluent.Options
+
+do
+end
+
 local Main = Tabs.Main:AddSection("ฟาร์มปลา")
 
 Tabs.Main:AddToggle("ออโต้ฟาร์มปลา", { Title = "ออโต้ไก่ตัน", Default = false }):OnChanged(function(value)
