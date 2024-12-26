@@ -2414,35 +2414,6 @@ local Toggle = Tabs.Main:AddToggle("Auto Farm Level 1-2550 Max", {
     Description = "Auto Farm Level 1-2600 Max",
     Default = false,
     Callback = function(Value)
-			local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-
--- ฟังก์ชันสร้างบล็อกใต้ตัวละคร
-function CreatePlatform()
-    local platform = Instance.new("Part")
-    platform.Size = Vector3.new(12, 0.5, 12) -- ขนาด 6x6
-    platform.Anchored = true -- ล็อคตำแหน่งไม่ให้เคลื่อนที่
-    platform.CanCollide = false -- ทำให้บล็อกทะลุผ่าน
-    platform.Material = Enum.Material.Neon -- เลือกวัสดุ Neon เพื่อให้เห็นชัด
-    platform.Parent = workspace
-
-    return platform
-end
-
--- อัปเดตตำแหน่งและสีของบล็อก
-function UpdatePlatform(platform)
-    local hue = 0 -- เริ่มต้นที่สีแดง
-    RunService.RenderStepped:Connect(function()
-        if character and character:FindFirstChild("HumanoidRootPart") then
-            local rootPart = character.HumanoidRootPart
-            -- อัปเดตตำแหน่งบล็อกให้ตรงกับตัวละคร โดยเลื่อนลงต่ำกว่าเท้าของตัวละคร
-            platform.CFrame = CFrame.new(rootPart.Position - Vector3.new(0, rootPart.Size.Y / 2 + 1.5, 0)) 
-
-            -- อัปเดตสีเป็นรุ้ง
-            hue = (hue + 0.01) % 1 -- หมุนวนค่า Hue
-            platform.Color = Color3.fromHSV(hue, 1, 1) -- เปลี่ยนสีตาม Hue
         _G.Hay = Value
         _G.AutoFarmLevel = Value
         StopTween(_G.AutoFarmLevel)
@@ -5369,3 +5340,33 @@ end
 RunService.Heartbeat:Connect(function()
     pcall(RemoveDeathEffects)
 end)
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+-- ฟังก์ชันสร้างบล็อกใต้ตัวละคร
+function CreatePlatform()
+    local platform = Instance.new("Part")
+    platform.Size = Vector3.new(12, 0.5, 12) -- ขนาด 6x6
+    platform.Anchored = true -- ล็อคตำแหน่งไม่ให้เคลื่อนที่
+    platform.CanCollide = false -- ทำให้บล็อกทะลุผ่าน
+    platform.Material = Enum.Material.Neon -- เลือกวัสดุ Neon เพื่อให้เห็นชัด
+    platform.Parent = workspace
+
+    return platform
+end
+
+-- อัปเดตตำแหน่งและสีของบล็อก
+function UpdatePlatform(platform)
+    local hue = 0 -- เริ่มต้นที่สีแดง
+    RunService.RenderStepped:Connect(function()
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            local rootPart = character.HumanoidRootPart
+            -- อัปเดตตำแหน่งบล็อกให้ตรงกับตัวละคร โดยเลื่อนลงต่ำกว่าเท้าของตัวละคร
+            platform.CFrame = CFrame.new(rootPart.Position - Vector3.new(0, rootPart.Size.Y / 2 + 1.5, 0)) 
+
+            -- อัปเดตสีเป็นรุ้ง
+            hue = (hue + 0.01) % 1 -- หมุนวนค่า Hue
+            platform.Color = Color3.fromHSV(hue, 1, 1)
