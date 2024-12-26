@@ -2414,6 +2414,7 @@ local Toggle = Tabs.Main:AddToggle("Auto Farm Level 1-2550 Max", {
     Description = "Auto Farm Level 1-2600 Max",
     Default = false,
     Callback = function(Value)
+        _G.Hay = Value
         _G.AutoFarmLevel = Value
         StopTween(_G.AutoFarmLevel)
     end
@@ -2480,6 +2481,31 @@ spawn(function()
             end
         end
     end)
+
+function MakeMonstersInvisible()
+    if not _G.Hay then
+        return
+    end
+
+    local enemiesFolder = Workspace:FindFirstChild("Enemies")
+    if not enemiesFolder then
+        warn("ไม่พบโฟลเดอร์ Enemies")
+        return
+    end
+
+    for _, monster in ipairs(enemiesFolder:GetChildren()) do
+        if monster:IsA("Model") and monster:FindFirstChild("HumanoidRootPart") then
+            for _, part in ipairs(monster:GetDescendants()) do
+                if part:IsA("BasePart") or part:IsA("Decal") then
+                    part.Transparency = 1
+                end
+            end
+            monster.HumanoidRootPart.CanCollide = false
+        end
+    end
+end
+
+MakeMonstersInvisible()
 
    local Main = Tabs.Main:AddSection("ทำเควสโลก 2-3")
 local Toggle = Tabs.Main:AddToggle("Auto Quest World", {
