@@ -2085,7 +2085,7 @@ local Tabs = {
     TP = Window:AddTab({ Title = "Island", Icon = "rbxassetid://15712738876" }),
     ESP = Window:AddTab({ Title = "ESP", Icon = "eye" }),   
     Shop = Window:AddTab({ Title = "Shop", Icon = "rbxassetid://15712767144" }), 
-    Misc = Window:AddTab({ Title = "Misc", Icon = "rbxassetid://15712771666" }),
+    Event = Window:AddTab({ Title = "Event", Icon = "rbxassetid://15712771666" }),
 }
 
 local Options = Fluent.Options
@@ -2240,6 +2240,16 @@ local Toggle = Tabs.Main:AddToggle("bingmob", {
     end
 })
 
+local Main = Tabs.Event:AddSection("อีเว้น")
+
+local Toggle = Tabs.Event:AddToggle("bingmob", {
+    Title = "ออโต้ฟาร์มแคนดี้", 
+    Description = "ใช้ได้เฉพาะ ( โลก3 )",
+    Default = false,
+    Callback = function(Value)
+        Nearest_Farm = Value
+    end
+})
 
    local Main = Tabs.Main:AddSection("ทำเควสโลก 2-3")
 local Toggle = Tabs.Main:AddToggle("Auto Quest World", {
@@ -5137,3 +5147,34 @@ game:GetService("ReplicatedStorage").Assets.Models:Destroy()
         v:Destroy()
 end
 
+_G.TargetMonster = {"Candy Rebel","Candy Pirate"} -- ใส่ชื่อมอนสเตอร์ที่ต้องการฟาร์ม เช่น Bandit, Gorilla ฯลฯ
+
+spawn(function()
+    while task.wait() do
+        if Nearest_Farm then
+            pcall(function()
+                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+                        if v.Name == _G.TargetMonster then
+                            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= 1000 then
+                                repeat game:GetService("RunService").Heartbeat:wait()
+                                    Equip_Weapon_Farm_All(_G.SelectWeapon) -- สวมใส่อาวุธ
+                                    Tween(v.HumanoidRootPart.CFrame * Farm_Mode) -- เคลื่อนที่ไปยังมอนสเตอร์
+                                    v.HumanoidRootPart.CanCollide = false
+                                    v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                    v.HumanoidRootPart.Transparency = 1
+                                    Nearest_Farm_Name = v.Name
+                                    Nearest_Farm_CFrame = v.HumanoidRootPart.CFrame
+                                    AutoHaki()
+                                until not Nearest_Farm 
+                                    or not v.Parent 
+                                    or v.Humanoid.Health <= 0 
+                                    or not game.Workspace.Enemies:FindFirstChild(v.Name)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
