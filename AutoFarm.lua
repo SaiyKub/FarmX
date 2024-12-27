@@ -5108,4 +5108,32 @@ RunService.Heartbeat:Connect(function()
     pcall(RemoveDeathEffects)
 end)
 
+spawn(function()
+    while wait() do
+        if DeleteAudioEffect then
+            for i,v in pairs(game:GetService("Workspace")["_WorldOrigin"]:GetChildren()) do
+                if v.Name == "Sounds" then
+                    for i2,v2 in pairs(v:GetChildren()) do
+                        if v2:IsA("Part") then
+                            v2:Destroy()
+                        end
+                    end
+                end
+                if v.Name == ("CurvedRing") or v.Name == ("SlashHit") or v.Name == ("SwordSlash") or v.Name == ("SlashTail") then
+                    v:Destroy()
+                end
+            end
+        end
+    end
+end)
+
+game:GetService("ReplicatedStorage").Assets.Models:Destroy()
+    game:GetService("ReplicatedStorage").Assets.GUI:Destroy()
+    game:GetService("ReplicatedStorage").Assets.SlashHit:Destroy()
+    for i,v in pairs(game:GetService("ReplicatedStorage").Effect.Container.Death:GetChildren()) do
+        v:Destroy()
+    end
+    for i,v in pairs(game:GetService("ReplicatedStorage").Effect.Container.Respawn:GetChildren()) do
+        v:Destroy()
+end
 
