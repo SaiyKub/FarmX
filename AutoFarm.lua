@@ -2231,14 +2231,7 @@ end
 
 MakeMonstersInvisible()
 
-local Toggle = Tabs.Main:AddToggle("bingmob", {
-    Title = "ออโต้ฟาร์มใกล้ที่สุด", 
-    Description = "AutoFarmNearest",
-    Default = false,
-    Callback = function(Value)
-        Nearest_Farm = Value
-    end
-})
+
 
 local Main = Tabs.Event:AddSection("อีเว้น")
 
