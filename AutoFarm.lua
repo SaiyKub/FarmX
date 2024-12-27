@@ -4873,16 +4873,7 @@ Tabs.Shop:AddButton({
     end
 })
 
-local Main = Tabs.Misc:AddSection("Join Server")
 
--- ปุ่มย้ายเชิร์ฟ
-Tabs.Misc:AddButton({
-    Title = "ย้ายเชิร์ฟ",
-    Description = "Join Server ",
-    Callback = function()
-        Hop()
-    end
-})
 
 local Main = Tabs.Seg:AddSection("เมนูตั้งค่าฟาร์ม")
 local SelectWeapon = Tabs.Seg:AddDropdown("SelectWeapon", {
@@ -5140,34 +5131,3 @@ game:GetService("ReplicatedStorage").Assets.Models:Destroy()
         v:Destroy()
 end
 
-_G.TargetMonster = {"Candy Rebel","Candy Pirate"} -- ใส่ชื่อมอนสเตอร์ที่ต้องการฟาร์ม เช่น Bandit, Gorilla ฯลฯ
-
-spawn(function()
-    while task.wait() do
-        if Nearest_Farm then
-            pcall(function()
-                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-                        if v.Name == _G.TargetMonster then
-                            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= 1000 then
-                                repeat game:GetService("RunService").Heartbeat:wait()
-                                    Equip_Weapon_Farm_All(_G.SelectWeapon) -- สวมใส่อาวุธ
-                                    Tween(v.HumanoidRootPart.CFrame * Farm_Mode) -- เคลื่อนที่ไปยังมอนสเตอร์
-                                    v.HumanoidRootPart.CanCollide = false
-                                    v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                    v.HumanoidRootPart.Transparency = 1
-                                    Nearest_Farm_Name = v.Name
-                                    Nearest_Farm_CFrame = v.HumanoidRootPart.CFrame
-                                    AutoHaki()
-                                until not Nearest_Farm 
-                                    or not v.Parent 
-                                    or v.Humanoid.Health <= 0 
-                                    or not game.Workspace.Enemies:FindFirstChild(v.Name)
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
