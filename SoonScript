@@ -1,0 +1,33 @@
+-- สร้าง ScreenGUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.ResetOnSpawn = false -- คง GUI ไว้แม้ผู้เล่นตายหรือรีเซ็ตตัวละคร
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- สร้าง Frame สำหรับพื้นหลัง
+local blurFrame = Instance.new("Frame")
+blurFrame.Size = UDim2.new(1, 0, 1, 0) -- เต็มจอ
+blurFrame.Position = UDim2.new(0, 0, 0, 0)
+blurFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- สีดำ
+blurFrame.BackgroundTransparency = 0.5 -- ความโปร่งใส
+blurFrame.Parent = screenGui
+
+-- ใส่ข้อความ
+local textLabel = Instance.new("TextLabel")
+textLabel.Size = UDim2.new(0.5, 0, 0.2, 0) -- ขนาดข้อความ
+textLabel.Position = UDim2.new(0.25, 0, 0.4, 0) -- ตำแหน่งกลางจอ
+textLabel.BackgroundTransparency = 1 -- ไม่มีพื้นหลัง
+textLabel.Text = "Update Script"
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- สีข้อความ
+textLabel.Font = Enum.Font.SourceSansBold -- ฟอนต์ข้อความ
+textLabel.TextScaled = true -- ปรับข้อความให้อัตโนมัติ
+textLabel.Parent = screenGui
+
+-- เพิ่มเอฟเฟกต์เบลอ (ใช้ BlurEffect)
+local blurEffect = Instance.new("BlurEffect")
+blurEffect.Size = 24 -- ระดับความเบลอ
+blurEffect.Parent = game.Lighting -- เพิ่มเอฟเฟกต์ใน Lighting
+
+-- เตะผู้เล่นออกจากเกมหลัง 10 วินาที
+wait(10) -- รอ 10 วินาที
+local player = game.Players.LocalPlayer
+player:Kick("อัพเดทอยู่ไอ้หนูรอก่อนเดี๋ยวก็ได้ใช้แล้ว | It's still up, kid. Wait a minute, you'll be able to use it soon") -- เตะผู้เล่นพร้อมข้อความ
