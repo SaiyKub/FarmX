@@ -4931,7 +4931,10 @@ local Toggle = Tabs.Seg:AddToggle("Auto Farm Level 1-2550 Max", {
 
     Callback = function(Value)
 
-        while true do
+        _G.FastAttck = Value
+if Value then
+spawn(function)
+while _G.FastAttck do
     task.wait() -- เพิ่มการหยุดพักเล็กน้อยเพื่อลดการโหลดระบบ
     for i, v in next, workspace.Enemies:GetChildren() do
         -- ตรวจสอบศัตรูที่อยู่ในระยะและยังไม่ตาย
