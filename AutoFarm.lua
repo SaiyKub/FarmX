@@ -4930,8 +4930,11 @@ local Toggle = Tabs.Seg:AddToggle("Auto Farm Level 1-2550 Max", {
     Default = true,
 
     Callback = function(Value)
+_G.FastAttck = Value
+    end
 
-        _G.FastAttck = Value
+})
+
 if Value then
 spawn(function)
 while _G.FastAttck do
@@ -4965,10 +4968,6 @@ while _G.FastAttck do
         end
     end
 end
-    end
-
-})
-
     
 
 
