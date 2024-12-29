@@ -4920,113 +4920,53 @@ spawn(function()
     end
 end)
 
-local env = (getgenv or getrenv or getfenv)()
-local rs = game:GetService("ReplicatedStorage")
-local players = game:GetService("Players")
-local client = players.LocalPlayer
-local modules = rs:WaitForChild("Modules")
-local net = modules:WaitForChild("Net")
-local charFolder = workspace:WaitForChild("Characters")
-local enemyFolder = workspace:WaitForChild("Enemies")
 
-local Module = {
-    AttackCooldown = tick()
-}
-local CachedChars = {}
-
-function Module.IsAlive(Char: Model?): boolean
-    if not Char then return nil end
-    if CachedChars[Char] then return CachedChars[Char].Health > 0 end
-
-    local Hum = Char:FindFirstChildOfClass("Humanoid")
-    CachedChars[Char] = Hum
-    return Hum and Hum.Health > 0
-end
-
-local Settings = {
-    ClickDelay = 0.01,
-    AutoClick = true
-}
-
-Module.FastAttack = (function()
-    if env._trash_attack then return env._trash_attack end
-
-    local AttackModule = {
-        NextAttack = 0,
-        Distance = 50,
-        attackMobs = true,
-        attackPlayers = true
-    }
-
-    local RegisterAttack = net:WaitForChild("RE/RegisterAttack")
-    local RegisterHit = net:WaitForChild("RE/RegisterHit")
-
-    function AttackModule:AttackEnemy(EnemyHead, Table)
-        if EnemyHead and client:DistanceFromCharacter(EnemyHead.Position) < self.Distance then
-            if not self.FirstAttack then
-                RegisterAttack:FireServer(Settings.ClickDelay or 0.125)
-                self.FirstAttack = true
-            end
-            RegisterHit:FireServer(EnemyHead, Table or {})
-        end
-    end
-
-    function AttackModule:AttackNearest()
-        local args = {nil, {}}
-        for _, Enemy in enemyFolder:GetChildren() do
-            if not args[1] and Enemy:FindFirstChild("HumanoidRootPart", true) and client:DistanceFromCharacter(Enemy.HumanoidRootPart.Position) < self.Distance then
-                args[1] = Enemy:FindFirstChild("UpperTorso")
-            elseif Enemy:FindFirstChild("HumanoidRootPart", true) and client:DistanceFromCharacter(Enemy.HumanoidRootPart.Position) < self.Distance then
-                table.insert(args[2], {
-                    [1] = Enemy,
-                    [2] = Enemy:FindFirstChild("UpperTorso")
-                })
-            end
-        end
-
-        self:AttackEnemy(unpack(args))
-
-        for _, Enemy in charFolder:GetChildren() do
-            if Enemy ~= client.Character then
-                self:AttackEnemy(Enemy:FindFirstChild("UpperTorso"))
-            end
-        end
-
-        if not self.FirstAttack then
-            task.wait(0.01)
-        end
-    end
-
-    function AttackModule:BladeHits()
-        self:AttackNearest()
-        self.FirstAttack = false
-    end
-
-    task.spawn(function()
-        while task.wait(Settings.ClickDelay or 0.125) do
-            if (tick() - Module.AttackCooldown) < 0.483 then continue end
-            if not Settings.AutoClick then continue end
-            if not Module.IsAlive(client.Character) then continue end
-            if not client.Character:FindFirstChildOfClass("Tool") then continue end
-
-            AttackModule:BladeHits()
-        end
-    end)
-
-    env._trash_attack = AttackModule
-    return AttackModule
-end)()
-
-local running = false
 local Toggle = Tabs.Seg:AddToggle("Auto Farm Level 1-2550 Max", {
-    Title = "ตีเร็ว", 
-    Description = "โครตตีเร็วๆ",
+
+    Title = "ตีเร็ว ( ใหม่ )", 
+
+    Description = "ตีเร็วอันใหม่โครตดี",
+
     Default = true,
+
     Callback = function(Value)
-        running = Value
-        Settings.AutoClick = running -- Toggles the AutoClick setting
+
+        while true do
+    task.wait() -- เพิ่มการหยุดพักเล็กน้อยเพื่อลดการโหลดระบบ
+    for i, v in next, workspace.Enemies:GetChildren() do
+        -- ตรวจสอบศัตรูที่อยู่ในระยะและยังไม่ตาย
+        if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") then
+            local distance = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+            if distance <= 60 then
+                -- ส่งคำสั่งโจมตี
+                game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Net"):WaitForChild("RE/RegisterAttack"):FireServer(0)
+                
+                local args = {
+                    [1] = v:FindFirstChild("RightHand"),
+                    [2] = {}
+                }
+
+                -- สร้างตารางศัตรูที่อยู่ในเกม
+                for _, e in next, workspace.Enemies:GetChildren() do
+                    if e:FindFirstChild("Humanoid") and e.Humanoid.Health > 0 then
+                        table.insert(args[2], {
+                            [1] = e,
+                            [2] = e:FindFirstChild("HumanoidRootPart") or e:FindFirstChildOfClass("BasePart")
+                        })
+                    end
+                end
+                
+                -- ส่งข้อมูลศัตรูที่ถูกโจมตี
+                game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Net"):WaitForChild("RE/RegisterHit"):FireServer(unpack(args))
+            end
+        end
     end
+end
+    end
+
 })
+
+    
 
 
 spawn(function()
